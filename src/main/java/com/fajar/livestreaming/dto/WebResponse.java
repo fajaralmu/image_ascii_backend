@@ -29,10 +29,17 @@ public class WebResponse implements Serializable {
 	private String code = "00";
 	@Builder.Default
 	private String message = "success";
+	
+	private String imageData;
+	
 	public static WebResponse failed(String msg) {
 		WebResponse response = new WebResponse();
 		response.setMessage(msg);
 		response.setCode("-1");
 		return response;
+	}
+
+	public static WebResponse failed(Exception e) {
+		return failed(e.getMessage());
 	}
 }

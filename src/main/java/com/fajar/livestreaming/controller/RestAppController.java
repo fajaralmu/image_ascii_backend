@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fajar.livestreaming.dto.WebRequest;
 import com.fajar.livestreaming.dto.WebResponse;
+import com.fajar.livestreaming.service.ImageProcessorService;
 
 @CrossOrigin
 @RestController(value = "api/app")
 public class RestAppController extends BaseController{
 	Logger log = LoggerFactory.getLogger(RestAppController.class);  
 	 
+	@Autowired
+	private ImageProcessorService imageProcessor;
 	
 	public RestAppController() {
 		log.info("------------------RestAppController #1-----------------");
@@ -30,10 +34,8 @@ public class RestAppController extends BaseController{
 //		LogProxyFactory.setLoggers(this);
 	}
 	
-	@PostMapping(value = "/generate", produces = MediaType.APPLICATION_JSON_VALUE)
-	public WebResponse generate(@RequestBody WebRequest request, HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse) { 
-//		realtimeUserService.disconnectLiveStream(request);
-		return new WebResponse();
+	@PostMapping(value = "/characterize", produces = MediaType.APPLICATION_JSON_VALUE)
+	public WebResponse characterize(@RequestBody WebRequest request, HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) { return imageProcessor.characterize(request);
 	}	
 }

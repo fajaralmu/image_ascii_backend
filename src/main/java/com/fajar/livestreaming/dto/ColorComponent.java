@@ -2,7 +2,6 @@ package com.fajar.livestreaming.dto;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,11 +48,11 @@ public class ColorComponent implements Serializable {
 			Integer gap = calculateGaps(colorComponents.get(i), pxRed, pxGreen, pxBlue);
 			colorGapSummaries.put(i, gap );
 		}
-		int minGapIndex = getMinGap(colorGapSummaries);
+		int minGapIndex = getMinGapIndex(colorGapSummaries);
 		return colorComponents.get(minGapIndex);
 	}
 
-	static Integer getMinGap(Map<Integer, Integer> colorGaps) {
+	static Integer getMinGapIndex(Map<Integer, Integer> colorGaps) {
 
 		Integer key = 0;
 		int gap = 255;
@@ -68,12 +67,12 @@ public class ColorComponent implements Serializable {
 
 	private static int calculateGaps(ColorComponent colorComponent, int pxRed, int pxGreen, int pxBlue) {
 
-		int gap = 0;
+		int gapSummary = 0;
 		int redGap = Math.abs(colorComponent.red - pxRed);
 		int greenGap = Math.abs(colorComponent.green - pxGreen);
 		int blueGap = Math.abs(colorComponent.blue - pxBlue);
 
-		gap = redGap + greenGap + blueGap;
-		return gap;
+		gapSummary = redGap + greenGap + blueGap;
+		return gapSummary;
 	}
 }

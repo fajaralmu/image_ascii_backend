@@ -2,6 +2,7 @@ package com.fajar.livestreaming.dto;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,7 @@ public class WebRequest implements Serializable {
 	 
 	@Default
 	private LinkedList<ColorFilter>  colorFilter = new LinkedList<>();
+	private List<ColorComponent> colorReducers;
+	private String imageData;
 
 }
