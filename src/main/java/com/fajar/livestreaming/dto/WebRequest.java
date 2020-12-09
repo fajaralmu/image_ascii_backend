@@ -26,5 +26,6 @@ public class WebRequest implements Serializable {
 	private LinkedList<ColorFilter>  colorFilters = new LinkedList<>();
 	private List<ColorComponent> colorReducers;
 	private String imageData;
+	private int percentage;
 
 }

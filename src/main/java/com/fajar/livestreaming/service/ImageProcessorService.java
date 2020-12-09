@@ -36,7 +36,7 @@ public class ImageProcessorService {
 			image = readImage(imageData);
 
 			String resultData = imageCharacterizerService.process(image, request.getColorFilters(),
-					request.getColorReducers(), binarized);
+					request.getColorReducers(), binarized, request.getPercentage());
 			response.setImageData(resultData);
 			response.setColorFilters(request.getColorFilters());
 			response.setColorReducers(request.getColorReducers());
@@ -48,14 +48,14 @@ public class ImageProcessorService {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String json = "{\"colorFilters\":[{\"index\":1,\"character\":\"Q\",\"useTemplateCharacter\":false,\"red\":{\"min\":0,\"max\":46},\"green\":{\"min\":0,\"max\":46},\"blue\":{\"min\":0,\"max\":46},\"hexMin\":\"#000000\",\"hexMax\":\"#2e2e2e\"},{\"index\":2,\"character\":\"=\",\"useTemplateCharacter\":false,\"red\":{\"min\":192,\"max\":255},\"green\":{\"min\":192,\"max\":255},\"blue\":{\"min\":192,\"max\":255},\"hexMin\":\"#c0c0c0\",\"hexMax\":\"#ffffff\"}],\"colorReducers\":[{\"index\":1,\"red\":0,\"green\":0,\"blue\":0,\"hex\":null},{\"index\":2,\"red\":255,\"green\":255,\"blue\":255,\"hex\":\"#ffffff\"}]}";
+		String json = "{\"colorFilters\":[{\"index\":1,\"character\":\"Q\",\"useTemplateCharacter\":false,\"red\":{\"min\":0,\"max\":0},\"green\":{\"min\":0,\"max\":0},\"blue\":{\"min\":0,\"max\":0}},{\"index\":2,\"character\":\"_\",\"useTemplateCharacter\":false,\"red\":{\"min\":255,\"max\":255},\"green\":{\"min\":255,\"max\":255},\"blue\":{\"min\":255,\"max\":255},\"hexMin\":\"#ffffff\",\"hexMax\":\"#ffffff\"}],\"colorReducers\":[{\"index\":1,\"red\":0,\"green\":0,\"blue\":0,\"hex\":null,\"resultFontSize\":1},{\"index\":2,\"red\":255,\"green\":255,\"blue\":255,\"hex\":\"#ffffff\",\"resultFontSize\":1}]}";
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		WebRequest req  = objectMapper.readValue(json, WebRequest.class);
 		
 		ImageCharacterizerService svc = new ImageCharacterizerService();
-		BufferedImage image = ImageIO.read(new File("C:\\Users\\Republic Of Gamers\\Pictures\\mask.jpg"));
-		svc.process(image , req.getColorFilters(), req.getColorReducers(), false);
+		BufferedImage image = ImageIO.read(new File("C:\\Users\\Republic Of Gamers\\Pictures\\j.jpg"));
+		svc.process(image , req.getColorFilters(), req.getColorReducers(), false, 0);
 		System.out.println(req);
 	}
 

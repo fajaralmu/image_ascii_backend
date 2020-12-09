@@ -14,20 +14,24 @@ import com.fajar.livestreaming.dto.ColorFilter;
 @Service
 public class ImageCharacterizerService {
 
-	private static final int PERCENTAGE = 17;
+	private static final int DEFAULT_PERCENTAGE = 17;
 	static Date date = new Date();
 	static final String TEMPLATE="#CharacterizeImage";
 	private static final boolean BINARIZE = true;
 
 	
-	public String process(BufferedImage image, List<ColorFilter> colorFilters, List<ColorComponent> colorReducers, boolean binarized) {
+	public String process(BufferedImage image, List<ColorFilter> colorFilters, List<ColorComponent> colorReducers, boolean binarized, int percentage) {
 		date = new Date();
 		System.out.println("Printing binary image in console");
 		System.out.println(StringUtils.repeat("-", 200));
 		
+		if (percentage <= 0) {
+			percentage = DEFAULT_PERCENTAGE;
+		}
+		
 		try {
-			int scaledWidth = image.getWidth() * (30+PERCENTAGE)/100;
-			int scaledHeight = image.getHeight() * PERCENTAGE / 100;
+			int scaledWidth = Double.valueOf(image.getWidth() *  ((1.4*percentage)+percentage)/100).intValue();
+			int scaledHeight = image.getHeight() * percentage / 100;
 			BufferedImage result;
 			if (binarized) {
 				colorReducers.clear();
@@ -65,8 +69,9 @@ public class ImageCharacterizerService {
 		 
 		StringBuilder stringBuilder = new StringBuilder();
 		int charIndex = 0;
+		int charCount = 0;
 		for (int y = 0; y < height; y++) {
-			
+			System.out.println("y: "+y+" cols: "+width);
 			for (int x = 0; x < width; x++) { 
 				int pixel = image.getRGB(x, y);
 				int red = (pixel >> 16) & 0xff;
@@ -102,14 +107,16 @@ public class ImageCharacterizerService {
 					} else {
 						stringBuilder.append(character);
 					}
-					
+					charCount++;
 				}else{
 					stringBuilder.append('-');
+					charCount++;
 				}
 			}
 //			stringBuilder.append('\n');
 			stringBuilder.append("<br/>");
 		}
+		System.out.println("charCount: "+charCount);
 		return stringBuilder.toString();
 	}
 }
