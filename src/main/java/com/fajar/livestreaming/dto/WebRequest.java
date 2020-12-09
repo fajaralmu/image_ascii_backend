@@ -23,7 +23,7 @@ public class WebRequest implements Serializable {
 	private static final long serialVersionUID = 110411933791444017L; 
 	 
 	@Default
-	private LinkedList<ColorFilter>  colorFilter = new LinkedList<>();
+	private LinkedList<ColorFilter>  colorFilters = new LinkedList<>();
 	private List<ColorComponent> colorReducers;
 	private String imageData;
 

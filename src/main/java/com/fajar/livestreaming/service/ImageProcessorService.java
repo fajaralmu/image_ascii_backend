@@ -20,19 +20,23 @@ public class ImageProcessorService {
 	private ImageCharacterizerService imageCharacterizerService;
 
 	public WebResponse characterize(WebRequest request) {
-		WebResponse response = new WebResponse();
-		String imageData = request.getImageData();
-		
-		boolean binarized = request.getColorReducers() == null || request.getColorReducers().isEmpty();
-		BufferedImage image = null;
 		try {
+			WebResponse response = new WebResponse();
+			String imageData = request.getImageData();
+
+			boolean binarized = request.getColorFilters() == null || request.getColorFilters().size() == 0 ||
+					request.getColorReducers() == null || request.getColorReducers().isEmpty();
+			BufferedImage image = null;
+
 			image = readImage(imageData);
+
+			String resultData = imageCharacterizerService.process(image, request.getColorFilters(),
+					request.getColorReducers(), binarized);
+			response.setImageData(resultData);
+			return response;
 		} catch (Exception e) {
 			return WebResponse.failed(e);
 		}
-		String resultData = imageCharacterizerService.process(image , request.getColorFilter(), request.getColorReducers(), binarized);
-		response.setImageData(resultData);
-		return response ;
 	}
 
 	private BufferedImage readImage(String data) throws IOException {

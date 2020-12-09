@@ -18,9 +18,9 @@ public class ColorFilter implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2972042514127731364L;
-	private ColorFilterItem redFilter;
-	private ColorFilterItem greenFilter;
-	private ColorFilterItem blueFilter;
+	private ColorFilterItem red;
+	private ColorFilterItem green;
+	private ColorFilterItem blue;
 
 	@Default
 	private boolean useTemplateCharacter = true;
@@ -31,13 +31,13 @@ public class ColorFilter implements Serializable {
 		return matchFilter(colorComponent.getRed(), colorComponent.getGreen(), colorComponent.getBlue());
 	}
 
-	public boolean matchFilter(int red, int green, int blue) {
+	public boolean matchFilter(int r, int g, int b) {
 
-		boolean matchRed = null != redFilter && redFilter.matchRange(red);
+		boolean matchRed = null != this.red && this.red.matchRange(r);
 //		System.out.println("red: "+ matchRed);
-		boolean matchGreen = null != greenFilter && greenFilter.matchRange(green);
+		boolean matchGreen = null != this.green && this.green.matchRange(g);
 //		System.out.println("green: "+ matchGreen);
-		boolean matchBlue = null != blueFilter && blueFilter.matchRange(blue);
+		boolean matchBlue = null != this.blue && this.blue.matchRange(b);
 //		System.out.println("blue: "+ matchBlue);
 
 		return matchRed && matchGreen && matchBlue;
@@ -60,13 +60,13 @@ public class ColorFilter implements Serializable {
 			colorFilter.setCharacter(character);
 		}
 		if (null != redMin && null != redMax) {
-			colorFilter.setRedFilter(ColorFilterItem.create(redMin, redMax));
+			colorFilter.setRed(ColorFilterItem.create(redMin, redMax));
 		}
 		if (null != greenMin && null != greenMax) {
-			colorFilter.setGreenFilter(ColorFilterItem.create(greenMin, greenMax));
+			colorFilter.setGreen(ColorFilterItem.create(greenMin, greenMax));
 		}
 		if (null != blueMin && null != blueMax) {
-			colorFilter.setBlueFilter(ColorFilterItem.create(blueMin, blueMax));
+			colorFilter.setBlue(ColorFilterItem.create(blueMin, blueMax));
 		}
 		return colorFilter;
 	}

@@ -18,24 +18,25 @@ import com.fajar.livestreaming.dto.WebResponse;
 import com.fajar.livestreaming.service.ImageProcessorService;
 
 @CrossOrigin
-@RestController(value = "api/app")
-public class RestAppController extends BaseController{
-	Logger log = LoggerFactory.getLogger(RestAppController.class);  
-	 
+@RestController
+public class RestAppController extends BaseController {
+	Logger log = LoggerFactory.getLogger(RestAppController.class);
+
 	@Autowired
 	private ImageProcessorService imageProcessor;
-	
+
 	public RestAppController() {
 		log.info("------------------RestAppController #1-----------------");
 	}
-	
+
 	@PostConstruct
 	public void init() {
 //		LogProxyFactory.setLoggers(this);
 	}
-	
-	@PostMapping(value = "/characterize", produces = MediaType.APPLICATION_JSON_VALUE)
+
+	@PostMapping(value = "api/app/characterize", produces = MediaType.APPLICATION_JSON_VALUE)
 	public WebResponse characterize(@RequestBody WebRequest request, HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse) { return imageProcessor.characterize(request);
-	}	
+			HttpServletResponse httpResponse) {
+		return imageProcessor.characterize(request);
+	}
 }

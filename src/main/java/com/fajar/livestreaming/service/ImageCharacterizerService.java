@@ -2,7 +2,6 @@ package com.fajar.livestreaming.service;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -79,15 +78,16 @@ public class ImageCharacterizerService {
 				
 				boolean matchFilter = false, useTemplateCharacter = true;
 				String character = "-";
-				loop: for (int i = 0; i < colorFilters.size(); i++) {
-					ColorFilter colorFilter = colorFilters.get(i);
-					if (colorFilter.matchFilter(red, green, blue)) {
-						character = colorFilter.getCharacter();
-						useTemplateCharacter = colorFilter.isUseTemplateCharacter();
-						matchFilter = true;
-						break loop;
+				if (colorFilters!=null)
+					loop: for (int i = 0; i < colorFilters.size(); i++) {
+						ColorFilter colorFilter = colorFilters.get(i);
+						if (colorFilter.matchFilter(red, green, blue)) {
+							character = colorFilter.getCharacter();
+							useTemplateCharacter = colorFilter.isUseTemplateCharacter();
+							matchFilter = true;
+							break loop;
+						}
 					}
-				}
 				if(matchFilter) {
 					if (useTemplateCharacter) {
 						stringBuilder.append(TEMPLATE.charAt(charIndex));
