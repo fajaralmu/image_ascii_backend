@@ -16,7 +16,7 @@ public class ImageCharacterizerService {
 
 	private static final int PERCENTAGE = 17;
 	static Date date = new Date();
-	static final String TEMPLATE="#AntiKorupsi";
+	static final String TEMPLATE="#CharacterizeImage";
 	private static final boolean BINARIZE = true;
 
 	
@@ -26,7 +26,7 @@ public class ImageCharacterizerService {
 		System.out.println(StringUtils.repeat("-", 200));
 		
 		try {
-			int scaledWidth = image.getWidth() * PERCENTAGE/100;
+			int scaledWidth = image.getWidth() * (30+PERCENTAGE)/100;
 			int scaledHeight = image.getHeight() * PERCENTAGE / 100;
 			BufferedImage result;
 			if (binarized) {
@@ -43,7 +43,11 @@ public class ImageCharacterizerService {
             
             String resultString = printImageV2(result, colorFilters, colorReducers);
             
-            System.out.println(resultString);
+            String[] splitByLines = resultString.split("<br/>");
+            for (int i = 0; i < splitByLines.length; i++) {
+            	System.out.println(splitByLines[i]);
+			}
+            
             
             System.out.println(StringUtils.repeat("-", 200));
             System.out.println("Duration:"+(System.currentTimeMillis()-date.getTime())+"ms");
@@ -103,7 +107,8 @@ public class ImageCharacterizerService {
 					stringBuilder.append('-');
 				}
 			}
-			stringBuilder.append('\n');
+//			stringBuilder.append('\n');
+			stringBuilder.append("<br/>");
 		}
 		return stringBuilder.toString();
 	}

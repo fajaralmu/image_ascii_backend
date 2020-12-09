@@ -2,6 +2,8 @@ package com.fajar.livestreaming.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -31,6 +33,9 @@ public class WebResponse implements Serializable {
 	private String message = "success";
 	
 	private String imageData;
+	private LinkedList<ColorFilter>  colorFilters = new LinkedList<>();
+	private List<ColorComponent> colorReducers;
+	private boolean binarized;
 	
 	public static WebResponse failed(String msg) {
 		WebResponse response = new WebResponse();
