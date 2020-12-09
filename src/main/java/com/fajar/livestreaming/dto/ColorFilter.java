@@ -25,6 +25,10 @@ public class ColorFilter implements Serializable {
 	private boolean useTemplateCharacter = true;
 	@Default
 	private String character = "o";
+	
+	public boolean matchFilter(ColorComponent colorComponent) {
+		return matchFilter(colorComponent.getRed(), colorComponent.getGreen(), colorComponent.getBlue());
+	}
 
 	public boolean matchFilter(int red, int green, int blue) {
 

@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.fajar.livestreaming.dto.ColorComponent;
 import com.fajar.livestreaming.dto.ColorFilter;
 
 @Service
@@ -24,19 +26,29 @@ public class ImageCharacterizer {
 	private static final boolean BINARIZE = true;
 	
 	public static void main(String[] args) {
-		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg", colorFilters(), BINARIZE);
+		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg", colorFilters(), colorAjudsterd(), BINARIZE);
+	}
+
+	private static List<ColorComponent> colorAjudsterd() {
+		List<ColorComponent> list = new ArrayList<ColorComponent>();
+		
+		ColorComponent adjust1 = ColorComponent.create(200, 200, 200);
+		ColorComponent adjust2 = ColorComponent.create(10,10,10);
+		list.add(adjust1 );
+		list.add(adjust2 );
+		return list ;
 	}
 
 	private static List<ColorFilter> colorFilters() {
 		List<ColorFilter> list = new LinkedList<ColorFilter>();
-		ColorFilter filter1 = ColorFilter.createExactSame(255, "x");
+		ColorFilter filter1 = ColorFilter.createExactSame(200, "x");
 		ColorFilter filter2 = ColorFilter.createExactSame(0, "0");
 		list.add(filter1);
 		list.add(filter2);
 		return list;
 	}
 
-	public static void process(String inputImagePath, List<ColorFilter> colorFilters, boolean binarized) {
+	public static String process(String inputImagePath, List<ColorFilter> colorFilters, List<ColorComponent> colorAdjusters, boolean binarized) {
 		date = new Date();
 		File inputFile = new File(inputImagePath);
 
@@ -59,18 +71,23 @@ public class ImageCharacterizer {
 			g2d.drawImage(image, 0, 0, scaledWidth, scaledHeight, null);
 			g2d.dispose();
             
-            printImageV2(result, colorFilters);
+            String resultString = printImageV2(result, colorFilters, colorAdjusters);
+            
+            System.out.println(resultString);
             
             System.out.println(StringUtils.repeat("-", 200));
             System.out.println("Duration:"+(System.currentTimeMillis()-date.getTime())+"ms");
+            return resultString;
 		} catch (IOException e) { 
 			e.printStackTrace();
+			return null;
 		}
 		
 	}
-	private static void printImageV2(BufferedImage image, List<ColorFilter> colorFilters) {
+	private static String printImageV2(BufferedImage image, List<ColorFilter> colorFilters, List<ColorComponent> colorAdjusters) {
 		int width = image.getWidth();
 		int height = image.getHeight();
+		final boolean adjustColor = colorAdjusters != null && colorAdjusters.size()>0;
 		 
 		StringBuilder stringBuilder = new StringBuilder();
 		int charIndex = 0;
@@ -81,6 +98,13 @@ public class ImageCharacterizer {
 				int red = (pixel >> 16) & 0xff;
 				int green = (pixel >> 8) & 0xff;
 				int blue = (pixel) & 0xff;
+				
+				if (adjustColor) {
+					ColorComponent adjustedColor = ColorComponent.adjust(pixel, colorAdjusters);
+					red = adjustedColor.getRed();
+					green = adjustedColor.getGreen();
+					blue = adjustedColor.getBlue();
+				}
 				
 				boolean matchFilter = false, useTemplateCharacter = true;
 				String character = "-";
@@ -110,7 +134,7 @@ public class ImageCharacterizer {
 			}
 			stringBuilder.append('\n');
 		}
-		System.out.println(stringBuilder.toString());
+		return stringBuilder.toString();
 	}
 	
 	private static void printImageBlackAndWhite(BufferedImage image) {
