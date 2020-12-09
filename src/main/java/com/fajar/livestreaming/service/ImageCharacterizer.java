@@ -5,11 +5,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import com.fajar.livestreaming.dto.ColorFilter;
 
 @Service
 public class ImageCharacterizer {
@@ -19,10 +23,19 @@ public class ImageCharacterizer {
 	static final String TEMPLATE="#AntiKorupsi";
 	
 	public static void main(String[] args) {
-		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg");
+		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg", colorFilters());
 	}
 
-	public static void process(String inputImagePath) {
+	private static List<ColorFilter> colorFilters() {
+		List<ColorFilter> list = new LinkedList<ColorFilter>();
+		ColorFilter filter1 = ColorFilter.createExactSame(255, "x");
+		ColorFilter filter2 = ColorFilter.createExactSame(0, "0");
+		list.add(filter1);
+		list.add(filter2);
+		return list;
+	}
+
+	public static void process(String inputImagePath, List<ColorFilter> colorFilters) {
 		date = new Date();
 		File inputFile = new File(inputImagePath);
 
@@ -40,7 +53,7 @@ public class ImageCharacterizer {
 			g2d.drawImage(image, 0, 0, scaledWidth, scaledHeight, null);
 			g2d.dispose();
             
-            printImage(result);
+            printImageV2(result, colorFilters);
             
             System.out.println(StringUtils.repeat("-", 200));
             System.out.println("Duration:"+(System.currentTimeMillis()-date.getTime())+"ms");
@@ -49,8 +62,52 @@ public class ImageCharacterizer {
 		}
 		
 	}
+	private static void printImageV2(BufferedImage image, List<ColorFilter> colorFilters) {
+		int width = image.getWidth();
+		int height = image.getHeight();
+		 
+		StringBuilder stringBuilder = new StringBuilder();
+		int charIndex = 0;
+		for (int y = 0; y < height; y++) {
+			
+			for (int x = 0; x < width; x++) { 
+				int pixel = image.getRGB(x, y);
+				int red = (pixel >> 16) & 0xff;
+				int green = (pixel >> 8) & 0xff;
+				int blue = (pixel) & 0xff;
+				
+				boolean matchFilter = false, useTemplateCharacter = true;
+				String character = "-";
+				loop: for (int i = 0; i < colorFilters.size(); i++) {
+					ColorFilter colorFilter = colorFilters.get(i);
+					if (colorFilter.matchFilter(red, green, blue)) {
+						character = colorFilter.getCharacter();
+						useTemplateCharacter = colorFilter.isUseTemplateCharacter();
+						matchFilter = true;
+						break loop;
+					}
+				}
+				if(matchFilter) {
+					if (useTemplateCharacter) {
+						stringBuilder.append(TEMPLATE.charAt(charIndex));
+						charIndex++;
+						if (charIndex == TEMPLATE.length()) {
+							charIndex = 0;
+						}
+					} else {
+						stringBuilder.append(character);
+					}
+					
+				}else{
+					stringBuilder.append('-');
+				}
+			}
+			stringBuilder.append('\n');
+		}
+		System.out.println(stringBuilder.toString());
+	}
 	
-	private static void printImage(BufferedImage image) {
+	private static void printImageBlackAndWhite(BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		 
