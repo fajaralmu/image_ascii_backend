@@ -21,9 +21,10 @@ public class ImageCharacterizer {
 	private static final int PERCENTAGE = 17;
 	static Date date = new Date();
 	static final String TEMPLATE="#AntiKorupsi";
+	private static final boolean BINARIZE = true;
 	
 	public static void main(String[] args) {
-		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg", colorFilters());
+		process("C:\\Users\\Republic Of Gamers\\Pictures\\hakordia.jpg", colorFilters(), BINARIZE);
 	}
 
 	private static List<ColorFilter> colorFilters() {
@@ -35,7 +36,7 @@ public class ImageCharacterizer {
 		return list;
 	}
 
-	public static void process(String inputImagePath, List<ColorFilter> colorFilters) {
+	public static void process(String inputImagePath, List<ColorFilter> colorFilters, boolean binarized) {
 		date = new Date();
 		File inputFile = new File(inputImagePath);
 
@@ -46,8 +47,13 @@ public class ImageCharacterizer {
 			BufferedImage image = ImageIO.read(inputFile);
 			int scaledWidth = image.getWidth() * PERCENTAGE/100;
 			int scaledHeight = image.getHeight() * PERCENTAGE / 100;
-			BufferedImage result = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_BYTE_BINARY);
-
+			BufferedImage result;
+			if (binarized) {
+				result = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_BYTE_BINARY);
+			} else {
+				result = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_RGB);
+			}
+			
 			// scales the input image to the output image
 			Graphics2D g2d = result.createGraphics();
 			g2d.drawImage(image, 0, 0, scaledWidth, scaledHeight, null);
